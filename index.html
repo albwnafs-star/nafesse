@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشغل فيديوهات يوتيوب</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .player-section {
+            flex: 3;
+            min-width: 300px;
+        }
+        
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff0000;
+        }
+        
+        .input-group button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .input-group button:hover {
+            background-color: #cc0000;
+        }
+        
+        .input-group button i {
+            margin-right: 8px;
+        }
+        
+        .video-container {
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #youtube-player {
+            width: 100%;
+            height: 500px;
+        }
+        
+        .placeholder-video {
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .placeholder-video i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .video-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .video-info h3 {
+            color: #ff0000;
+            margin-bottom: 10px;
+        }
+        
+        .instructions {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-right: 4px solid #ff0000;
+        }
+        
+        .instructions h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .instructions ul {
+            padding-right: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .sidebar h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .favorites-list {
+            list-style: none;
+        }
+        
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .favorite-item:hover {
+            background-color: #f0f0f0;
+            transform: translateX(-5px);
+        }
+        
+        .favorite-item img {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        
+        .favorite-title {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .remove-favorite {
+            background: none;
+            border: none;
+            color: #ff0000;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+        }
+        
+        .empty-favorites {
+            text-align: center;
+            color: #777;
+            padding: 30px 0;
+        }
+        
+        .empty-favorites i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            #youtube-player {
+                height: 300px;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert.error {
+            background-color: #ffe6e6;
+            color: #cc0000;
+            border-right: 4px solid #cc0000;
+        }
+        
+        .alert.success {
+            background-color: #e6ffe6;
+            color: #006600;
+            border-right: 4px solid #006600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-youtube"></i>
+                <div>
+                    <h1>مشغل فيديوهات يوتيوب</h1>
+                    <div class="subtitle">شاهد أي فيديو من يوتيوب بمجرد إدخال الرابط</div>
+                </div>
+            </div>
+            <div class="instructions">
+                <h4>كيفية الاستخدام:</h4>
+                <ul>
+                    <li>انسخ رابط فيديو يوتيوب من المتصفح</li>
+                    <li>الصق الرابط في الحقل بالأعلى</li>
+                    <li>انقر على زر "تشغيل الفيديو"</li>
+                </ul>
+            </div>
+        </header>
+        
+        <div class="alert error" id="error-alert">
+            <i class="fas fa-exclamation-circle"></i> <span id="error-message">الرجاء إدخال رابط يوتيوب صحيح</span>
+        </div>
+        
+        <div class="alert success" id="success-alert">
+            <i class="fas fa-check-circle"></i> <span id="success-message">تم تحميل الفيديو بنجاح</span>
+        </div>
+        
+        <div class="main-content">
+            <section class="player-section">
+                <div class="input-section">
+                    <h2>أدخل رابط فيديو يوتيوب</h2>
+                    <div class="input-group">
+                        <input type="text" id="video-url" placeholder="مثال: https://www.youtube.com/watch?v=VIDEO_ID" value="https://www.youtube.com/watch?v=JGwWNGJdvx8">
+                        <button id="play-btn">
+                            <i class="fas fa-play"></i> تشغيل الفيديو
+                        </button>
+                    </div>
+                    <p>يمكنك لصق رابط فيديو يوتيوب بأي صيغة (youtube.com أو youtu.be)</p>
+                </div>
+                
+                <div class="video-container">
+                    <div id="youtube-player">
+                        <div class="placeholder-video">
+                            <i class="fab fa-youtube"></i>
+                            <h3>سيظهر الفيديو هنا بعد إدخال الرابط</h3>
+                            <p>جرب إدخال رابط فيديو يوتيوب واضغط على زر التشغيل</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-info">
+                    <h3>معلومات الفيديو</h3>
+                    <p id="video-title">لم يتم تحميل فيديو بعد</p>
+                    <p id="video-description">سيظهر وصف الفيديو هنا بعد التحميل</p>
+                </div>
+            </section>
+            
+            <aside class="sidebar">
+                <h2><i class="fas fa-star"></i> الفيديوهات المفضلة</h2>
+                <ul class="favorites-list" id="favorites-list">
+                    <li class="empty-favorites">
+                        <i class="far fa-star"></i>
+                        <p>لا توجد فيديوهات مفضلة بعد</p>
+                        <p>أضف فيديوهات بالنقر على زر "إضافة للمفضلة"</p>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+        
+        <footer>
+            <p>تم إنشاء هذا التطبيق باستخدام HTML، CSS، وJavaScript وYouTube IFrame API</p>
+            <p>© 2023 مشغل فيديوهات يوتيوب - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script>
+        // عناصر DOM
+        const videoUrlInput = document.getElementById('video-url');
+        const playButton = document.getElementById('play-btn');
+        const youtubePlayer = document.getElementById('youtube-player');
+        const videoTitle = document.getElementById('video-title');
+        const videoDescription = document.getElementById('video-description');
+        const errorAlert = document.getElementById('error-alert');
+        const successAlert = document.getElementById('success-alert');
+        const favoritesList = document.getElementById('favorites-list');
+        
+        // متغيرات التطبيق
+        let player;
+        let currentVideoId = '';
+        let favorites = JSON.parse(localStorage.getItem('youtubeFavorites')) || [];
+        
+        // تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل الفيديوهات المفضلة
+            loadFavorites();
+            
+            // إضافة حدث للنقر على زر التشغيل
+            playButton.addEventListener('click', loadVideoFromUrl);
+            
+            // إضافة حدث عند الضغط على Enter في حقل الإدخال
+            videoUrlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loadVideoFromUrl();
+                }
+            });
+            
+            // تحميل الفيديو الافتراضي عند بدء التطبيق
+            setTimeout(() => {
+                loadVideoFromUrl();
+            }, 500);
+        });
+        
+        // استخراج معرف الفيديو من الرابط
+        function extractVideoId(url) {
+            // صيغ روابط يوتيوب الشائعة
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+                /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/
+            ];
+            
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) {
+                    return match[1];
+                }
+            }
+            
+            return null;
+        }
+        
+        // تحميل الفيديو من الرابط المدخل
+        function loadVideoFromUrl() {
+            const url = videoUrlInput.value.trim();
+            
+            if (!url) {
+                showError('الرجاء إدخال رابط فيديو يوتيوب');
+                return;
+            }
+            
+            const videoId = extractVideoId(url);
+            
+            if (!videoId) {
+                showError('الرابط المدخل غير صحيح. الرجاء التأكد من أنه رابط فيديو يوتيوب');
+                return;
+            }
+        
+            currentVideoId = videoId;
+            loadYouTubePlayer(videoId);
+        }
+        
+        // تحميل مشغل يوتيوب
+        function loadYouTubePlayer(videoId) {
+            // إذا كان هناك مشغل قديم، نقوم بإزالته
+            if (player) {
+                youtubePlayer.innerHTML = '';
+            }
+            
+            // إنشاء iframe جديد
+            const iframe = document.createElement('iframe');
+            iframe.id = 'player-iframe';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+            iframe.width = '100%';
+            iframe.height = '500';
+            iframe.frameBorder = '0';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+            
+            youtubePlayer.innerHTML = '';
+            youtubePlayer.appendChild(iframe);
+            
+            // تحميل معلومات الفيديو
+            loadVideoInfo(videoId);
+            
+            // إظهار رسالة النجاح
+            showSuccess('تم تحميل الفيديو بنجاح');
+        }
+        
+        // تحميل معلومات الفيديو من واجهة يوتيوب (نستخدم معلومات وهمية في هذا المثال)
+        function loadVideoInfo(videoId) {
+            // في التطبيق الحقيقي، يمكنك استخدام YouTube Data API لجلب المعلومات الحقيقية
+            // هنا نستخدم معلومات وهمية للتوضيح
+            
+            const videoTitles = {
+                'JGwWNGJdvx8': 'Ed Sheeran - Shape of You [Official Video]',
+                'dQw4w9WgXcQ': 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
+                '9bZkp7q19f0': 'PSY - GANGNAM STYLE(강남스타일) M/V'
+            };
+            
+            const videoDescriptions = {
+                'JGwWNGJdvx8': 'أغنية Shape of You للمغني إد شيران من ألبوم ÷ (القسمة).',
+                'dQw4w9WgXcQ': 'أغنية Never Gonna Give You Up للمغني ريك أستلي، أصبحت ظاهرة إنترنت معروفة باسم Rickrolling.',
+                '9bZkp7q19f0': 'أغنية Gangnam Style للفنان الكوري PSY، أول فيديو على يوتيوب يتخطى مليار مشاهدة.'
+            };
+            
+            videoTitle.textContent = videoTitles[videoId] || 'فيديو يوتيوب';
+            videoDescription.textContent = videoDescriptions[videoId] || 'وصف الفيديو سيظهر هنا. في التطبيق الحقيقي، يمكن استخدام YouTube Data API لجلب المعلومات الحقيقية للفيديو.';
+            
+            // إضافة زر لإضافة الفيديو للمفضلة
+            addFavoriteButton();
+        }
+        
+        // إضافة زر لإضافة الفيديو الحالي للمفضلة
+        function addFavoriteButton() {
+            // التحقق إذا كان الفيديو موجودًا بالفعل في المفضلة
+            const isFavorite = favorites.some(fav => fav.id === currentVideoId);
+            
+            // البحث عن زر الإضافة للمفضلة الموجود مسبقًا وإزالته
+            const existingButton = document.querySelector('.add-to-favorites-btn');
+            if (existingButton) {
+                existingButton.remove();
+            }
+            
+            // إنشاء زر جديد
+            const button = document.createElement('button');
+            button.className = 'add-to-favorites-btn input-group button';
+            button.style.marginTop = '10px';
+            button.style.width = '100%';
+            button.style.borderRadius = '8px';
+            
+            if (isFavorite) {
+                button.innerHTML = '<i class="fas fa-star"></i> الفيديو موجود في المفضلة';
+                button.style.backgroundColor = '#ff9900';
+            } else {
+                button.innerHTML = '<i class="far fa-star"></i> إضافة إلى المفضلة';
+                button.style.backgroundColor = '#28a745';
+            }
+            
+            button.addEventListener('click', toggleFavorite);
+            
+            // إضافة الزر بعد حقل الإدخال
+            const inputSection = document.querySelector('.input-section');
+            inputSection.appendChild(button);
+        }
+        
+        // إضافة/إزالة الفيديو من المفضلة
+        function toggleFavorite() {
+            const videoTitleText = videoTitle.textContent;
+            
+            // التحقق إذا كان الفيديو موجودًا بالفعل في المفضلة
+            const existingIndex = favorites.findIndex(fav => fav.id === currentVideoId);
+            
+            if (existingIndex > -1) {
+                // إزالة من المفضلة
+                favorites.splice(existingIndex, 1);
+                showSuccess('تم إزالة الفيديو من المفضلة');
+            } else {
+                // إضافة إلى المفضلة
+                favorites.push({
+                    id: currentVideoId,
+                    title: videoTitleText,
+                    url: videoUrlInput.value.trim()
+                });
+                showSuccess('تم إضافة الفيديو إلى المفضلة');
+            }
+            
+            // حفظ المفضلة في التخزين المحلي
+            localStorage.setItem('youtubeFavorites', JSON.stringify(favorites));
+            
+            // تحديث عرض المفضلة
+            loadFavorites();
+            
+            // تحديث زر الإضافة للمفضلة
+            addFavoriteButton();
+        }
+        
+        // تحميل قائمة الفيديوهات المفضلة
+        function loadFavorites() {
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = `
+                    <li class="empty-favorites">
+                        <i class="far fa-star"></i>
+                        <p>لا توجد فيديوهات مفضلة بعد</p>
+                        <p>أضف فيديوهات بالنقر على زر "إضافة للمفضلة"</p>
+                    </li>
+                `;
+                return;
+            }
+            
+            favoritesList.innerHTML = '';
+            
+            favorites.forEach((favorite, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'favorite-item';
+                
+                // إنشاء صورة مصغرة للفيديو
+                const thumbnailUrl = `https://img.youtube.com/vi/${favorite.id}/default.jpg`;
+                
+                listItem.innerHTML = `
+                    <img src="${thumbnailUrl}" alt="${favorite.title}">
+                    <div class="favorite-title">${favorite.title}</div>
+                    <button class="remove-favorite" data-index="${index}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                // إضافة حدث النقر لعرض الفيديو
+                listItem.addEventListener('click', function(e) {
+                    if (!e.target.closest('.remove-favorite')) {
+                        videoUrlInput.value = favorite.url;
+                        currentVideoId = favorite.id;
+                        loadYouTubePlayer(favorite.id);
+                    }
+                });
+                
+                // إضافة حدث النقر لحذف الفيديو من المفضلة
+                const removeBtn = listItem.querySelector('.remove-favorite');
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeFromFavorites(index);
+                });
+                
+                favoritesList.appendChild(listItem);
+            });
+        }
+        
+        // إزالة فيديو من المفضلة
+        function removeFromFavorites(index) {
+            favorites.splice(index, 1);
+            localStorage.setItem('youtubeFavorites', JSON.stringify(favorites));
+            loadFavorites();
+            
+            // إذا كان الفيديو المحذوف هو الفيديو الحالي، نقوم بتحديث زر الإضافة للمفضلة
+            addFavoriteButton();
+            
+            showSuccess('تم إزالة الفيديو من المفضلة');
+        }
+        
+        // عرض رسالة خطأ
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            errorAlert.style.display = 'block';
+            successAlert.style.display = 'none';
+            
+            // إخفاء الرسالة بعد 5 ثواني
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // عرض رسالة نجاح
+        function showSuccess(message) {
+            document.getElementById('success-message').textContent = message;
+            successAlert.style.display = 'block';
+            errorAlert.style.display = 'none';
+            
+            // إخفاء الرسالة بعد 3 ثواني
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
